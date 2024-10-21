@@ -129,6 +129,10 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+mdcenv
+Bio_Device_Classifier.egg-info
+logs
+nohup.out
 
 # Spyder project settings
 .spyderproject
