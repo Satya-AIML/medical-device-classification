@@ -87,6 +87,8 @@ def get_content(input_option):
 
 def display_prediction_result(content):
     """Submits the content for prediction and displays the result."""
+    prediction_successful = False
+
     if content and st.button("Submit for prediction"):
         try:
             data = {"text": content}
@@ -94,11 +96,13 @@ def display_prediction_result(content):
             result = prediction(data)
             predicted_class = result.get("predicted_class", "No class predicted")
             st.success(f"Predicted Class: {predicted_class}")
+            prediction_successful = True
             
         except Exception as e:
             st.error(f"Error during prediction: {e}")
             logger.error(f"Prediction error: {e}")
-            
+
+    return prediction_successful        
 
 # Function to display images for each index
 def get_image_path(index):
@@ -166,13 +170,16 @@ def display_dataframe(df):
 def main():
     """Main function to run the Streamlit app."""
 
+    # Initialize flag
+    flag = False
+
     # # Create two columns for the top images (left and right corners)
     # col1 = st.columns([1, 1])
     
     # with col1:
     # Load and display the image on the left
     left_image = Image.open(merai_logo)
-    st.image(left_image, width=150)
+    st.image(left_image, width=200)
 
     # with col2:
     #     # Load and display the image on the right
@@ -195,15 +202,16 @@ def main():
 
             # If content is available, display the prediction result
             if content:
-                display_prediction_result(content)
+                flag = display_prediction_result(content)
 
-                top_k_results = query_similar_embeddings(content)
             
 
 
         # Pane 2 (Dataframe display)
         with col2:
-            if content:
+            if flag:
+                top_k_results = query_similar_embeddings(content)
+                
                 display_top_results(top_k_results=top_k_results,SPECIFIED_TAGS=SPECIFIED_TAGS)
         
 
