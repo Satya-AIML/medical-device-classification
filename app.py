@@ -14,7 +14,46 @@ from Bio_Device_Classifier.logging import logger
 st.set_page_config(layout="wide")
 
 image_directory = "/home/rajvs/Medical-Device-Classification/Generated_Images"
+merai_logo = "logos/Merai_logo_bgless 1.png"
+stream_vision_logo = "logos/StreamVision-removebg-preview.png"
 
+def display_top_results(top_k_results, SPECIFIED_TAGS):
+    # Process and map labels using specified tags
+    for res in top_k_results:
+        res['index'] = int(res['index'])
+        res['label'] = SPECIFIED_TAGS[int(res['label'])]
+
+    results_with_images = [
+        {
+            'device_name': res['device_name'],
+            'label': res['label'],
+            'image': get_image_path(res['index'])
+        }
+        for res in top_k_results if get_image_path(res['index'])
+    ]
+
+    # Display the results
+    st.write("### Top Results")
+    col1, col2, col3 = st.columns([2, 1, 2])
+
+    with col1:
+        st.write("**Device Name**")
+    with col2:
+        st.write("**Label**")
+    with col3:
+        st.write("**Image**")
+
+    # Populating the table rows
+    for result in results_with_images:
+        col1, col2, col3 = st.columns([2, 1, 2])
+
+        with col1:
+            st.write(result['device_name'])
+        with col2:
+            st.write(result['label'])
+        with col3:
+            image = Image.open(result['image'])
+            st.image(image, width=100)
 
 def read_pdf(file):
     """Reads and extracts text from a PDF file."""
@@ -69,25 +108,6 @@ def get_image_path(index):
     else:
         return None  # If the image doesn't exist
 
-# Function to display a specific image from the DataFrame
-def show_image_from_dataframe(df, index):
-    """Displays an image from the DataFrame at the specified index."""
-    if index < len(df):
-        image_path = df.loc[index, 'image_path']
-        try:
-            # Open the image
-            image = Image.open(image_path)
-            
-            # Create a figure and axis
-            plt.figure(figsize=(6, 6))  # Adjust size as needed
-            plt.imshow(image)  # Display the image
-            plt.axis('off')  # Hide axes
-            plt.title(df.loc[index, 'device_name'])  # Set the title from the DataFrame
-            plt.show()  # Show the plot
-        except Exception as e:
-            print(f"Error displaying image: {e}")
-    else:
-        print("Index out of range")
  
 # Function to check if the image path exists
 def check_image_path_exists(image_path):
@@ -145,11 +165,28 @@ def display_dataframe(df):
 
 def main():
     """Main function to run the Streamlit app."""
+
+    # # Create two columns for the top images (left and right corners)
+    # col1 = st.columns([1, 1])
+    
+    # with col1:
+    # Load and display the image on the left
+    left_image = Image.open(merai_logo)
+    st.image(left_image, width=150)
+
+    # with col2:
+    #     # Load and display the image on the right
+    #     right_image = Image.open(stream_vision_logo)
+    #     st.image(right_image, width=150)
+
+
     st.title("Medical Device Classification App")
     
     with st.container():
+
+        
         # Create two columns (panes)
-        col1, col2 = st.columns([1, 2])
+        col1, col2 = st.columns([1, 1])
 
         # Pane 1 (Input options and Submit button)
         with col1:
@@ -157,53 +194,18 @@ def main():
             content = get_content(input_option)
 
             # If content is available, display the prediction result
-            display_prediction_result(content)
+            if content:
+                display_prediction_result(content)
+
+                top_k_results = query_similar_embeddings(content)
+            
 
 
         # Pane 2 (Dataframe display)
         with col2:
-            top_k_results = query_similar_embeddings(content)
-            print(top_k_results)
-
-
-            for res in top_k_results:
-                res['index'] = int(res['index'])
-                res['label'] = int(res['label'])
-                res['label'] = SPECIFIED_TAGS[res['label']]
-            
-            results_with_images = []
-
-            for res in top_k_results:
-                image_path = get_image_path(res['index'])
-                if image_path:  # If the image exists, add it to the results
-                    results_with_images.append({
-                        'device_name': res['device_name'],
-                        'label': res['label'],
-                        'image': image_path
-                    })
-                
-            st.write("### Top Results")
-            col1, col2, col3 = st.columns([2, 1, 2])
-            
-            with col1:
-                st.write("**Device Name**")
-            with col2:
-                st.write("**Label**")
-            with col3:
-                st.write("**Image**")
-            
-            # Populating the table rows
-            for result in results_with_images:
-                col1, col2, col3 = st.columns([2, 1, 2])
-                
-                with col1:
-                    st.write(result['device_name'])
-                with col2:
-                    st.write(result['label'])
-                with col3:
-                    image = Image.open(result['image'])
-                    st.image(image, width=100)
-
+            if content:
+                display_top_results(top_k_results=top_k_results,SPECIFIED_TAGS=SPECIFIED_TAGS)
+        
 
 
 if __name__ == "__main__":
