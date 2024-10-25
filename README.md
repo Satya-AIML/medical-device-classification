@@ -14,17 +14,48 @@ This project aims to classify medical devices into four categories using a Fine-
 ## Installation
 To set up the project, follow these steps:
 
-1. Clone the repository:
+1. Create a Python Environment
+Choose one of the following methods to create a Python environment compatible with the project. 
+If using venv or virtualenv ensure that the Python version is 3.12.7 installed.
+
+Using Conda
+   ```bash
+   conda create -n env_name python=3.12.7
+   conda activate env_name
+   ```
+
+Using Python's venv
+
+```bash
+   python3 -m venv env_name
+   source env_name/bin/activate  # On Linux/MacOS
+   env_name\Scripts\activate     # On Windows
+```
+Using virtualenv
+First, install virtualenv if it’s not already installed:
+
+```bash
+   pip install virtualenv
+```
+Then, create and activate the environment:
+
+```bash
+   virtualenv env_name
+   source env_name/bin/activate  # On Linux/MacOS
+   env_name\Scripts\activate     # On Windows
+```
+
+2. Clone the repository:
    ```bash
    git clone https://github.com/Satya-AIML/medical-device-classification.git
    cd MEDICAL-DEVICE-CLASSIFICATION
 
-2. Install the required Python dependencies:
+3. Install the required Python dependencies:
 
    ```bash
    pip install -r requirements.txt
 
-3. Set up external API keys and configurations by placing them in a config.ini file in the correct directories:
+4. Set up external API keys and configurations by placing them in a config.ini file in the correct directories:
 
    ```bash
    src/Bio_Device_Classifier/config.ini   
