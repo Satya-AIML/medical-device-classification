@@ -27,23 +27,23 @@ To set up the project, follow these steps:
    Using Python's venv
 
    ```bash
-      python3 -m venv env_name
-      source env_name/bin/activate  # On Linux/MacOS
-      env_name\Scripts\activate     # On Windows
+   python3 -m venv env_name
+   source env_name/bin/activate  # On Linux/MacOS
+   env_name\Scripts\activate     # On Windows
    ```
    
    Using virtualenv
    First, install virtualenv if it’s not already installed:
 
    ```bash
-      pip install virtualenv
+   pip install virtualenv
    ```
    Then, create and activate the environment:
 
    ```bash
-      virtualenv env_name
-      source env_name/bin/activate  # On Linux/MacOS
-      env_name\Scripts\activate     # On Windows
+   virtualenv env_name
+   source env_name/bin/activate  # On Linux/MacOS
+   env_name\Scripts\activate     # On Windows
    ```
 
 2. Clone the repository:
