@@ -1,7 +1,10 @@
+import nltk
 import pandas as pd
 from Bio_Device_Classifier.embedding import get_embeddings
 from Bio_Device_Classifier.utils import pinecone_utils
 from Bio_Device_Classifier.constants import INDEX_NAME
+
+nltk.dowmload("stopwords")
 
 def query_similar_embeddings(input_text):
     pc = pinecone_utils.initialize_pinecone()
