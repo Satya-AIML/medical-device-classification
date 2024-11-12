@@ -15,4 +15,4 @@ RANDOM_STATE = 42
 DATA_FILE_PATH = "ImageGen.csv"
 MODEL_SAVE_PATH = "bert_classifier_best_version.pth"
 INDEX_NAME = 'mdc-vector-database'
-
+IMAGES_DIR = "/home/rajvs/Medical-Device-Classification/Generated_Images"

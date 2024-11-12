@@ -1,27 +1,30 @@
-# Import the from bentoml_utils.py initialization function
-
+# File: pipeline/prediction.py
+import os
+import bentoml
+from bentoml.io import JSON
 import torch
-from Bio_Device_Classifier.utils import bentoml_utils
-from Bio_Device_Classifier.utils.bentoml_utils import tokenizer, model_runner  # Import global variables
-from Bio_Device_Classifier.constants import SPECIFIED_TAGS, MAX_LENGTH  # Import necessary constants
+from transformers import AutoTokenizer
+from Bio_Device_Classifier.constants import BERT_MODEL_NAME
+from Bio_Device_Classifier.logging import logger
 
-def prediction(input_data):
-    # Check if model_runner is initialized
-    if model_runner is None:
-        raise ValueError("Model runner is not initialized. Please ensure the service is initialized.")
+# Initialize tokenizer and model runner
+tokenizer = AutoTokenizer.from_pretrained(BERT_MODEL_NAME)
+model_runner = bentoml.pytorch.get("bert_classifier:latest").to_runner()
 
-    # Get text input from the user
+# Define the BentoML service
+svc = bentoml.Service("bert_classifier_service", runners=[model_runner])
+
+os.system("bentoml serve prediction.py:svc --reload")
+
+@svc.api(input=JSON(), output=JSON())
+def predict(input_data):
+    # Extract and preprocess input
     text = input_data.get("text")
+    inputs = tokenizer(text, return_tensors="pt", padding="max_length", truncation=True)
 
-    # Tokenize the input text
-    inputs = tokenizer(text, return_tensors='pt', max_length=MAX_LENGTH, padding='max_length', truncation=True)
-
-    # Use model runner to make a prediction
-    outputs = model_runner.run(inputs['input_ids'], inputs['attention_mask'])
+    # Run prediction
+    outputs = model_runner.run(inputs["input_ids"], inputs["attention_mask"])
     _, preds = torch.max(outputs, dim=1)
-
-    # Convert prediction to class label
-    predicted_class = SPECIFIED_TAGS[preds.item()]
+    predicted_class = preds.item()  # Assuming a single prediction for simplicity
 
     return {"predicted_class": predicted_class}
-
