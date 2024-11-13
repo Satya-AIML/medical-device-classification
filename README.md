@@ -49,14 +49,10 @@ To set up the project, follow these steps:
 2. Clone the repository:
    ```bash
    git clone https://github.com/Satya-AIML/medical-device-classification.git
-   cd MEDICAL-DEVICE-CLASSIFICATION
+   cd medical-device-classification
 
 3. Install the required Python dependencies:
 
    ```bash
    pip install -r requirements.txt
 
-4. Set up external API keys and configurations by placing them in a config.ini file in the correct directories:
-
-   ```bash
-   src/Bio_Device_Classifier/config.ini   
