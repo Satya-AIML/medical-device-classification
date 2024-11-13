@@ -56,3 +56,7 @@ To set up the project, follow these steps:
    ```bash
    pip install -r requirements.txt
 
+4. start the app
+   ```bash
+   streamlit run app.py
+
