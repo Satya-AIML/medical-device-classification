@@ -26,7 +26,7 @@ def create_index_func(pc, index_name):
 def initialize_pinecone():
     config = load_config()
     api_key = config['PINECONE']['PINECONE_API_KEY']
-    Pinecone = pinecone.Pinecone(api_key=api_key)  # Corrected to use init
+    Pinecone = pinecone.Pinecone(api_key=api_key)  
     return Pinecone
 
 def check_and_recreate_index(pc, index_name, create_index_func):
